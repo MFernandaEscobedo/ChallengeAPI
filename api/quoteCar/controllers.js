@@ -65,7 +65,6 @@ const getBestOptionByType = (quotes, brand, year, type, hasAC) => {
       year <= quote.yearRange[1] &&
       quote.coverageType === type
   );
-  console.log(type, filtered);
 
   let bestOption = null;
   if (filtered.length === 0) return {};
@@ -84,7 +83,7 @@ const getBestOptionByType = (quotes, brand, year, type, hasAC) => {
       bestOption = quote;
     }
   }
-  console.log("best", bestOption);
+
   delete quote.totalPrice;
   return bestOption;
 };

@@ -47,7 +47,6 @@ const getBestOptionByType = (quotes, year, type) => {
       year >= quote.yearRange[0] &&
       year <= quote.yearRange[1]
   );
-  console.log(type, filtered);
 
   let bestOption = null;
   if (filtered.length === 0) return {};
@@ -60,7 +59,7 @@ const getBestOptionByType = (quotes, year, type) => {
       bestOption = quote;
     }
   }
-  console.log("best", bestOption);
+
   return bestOption;
 };
 
