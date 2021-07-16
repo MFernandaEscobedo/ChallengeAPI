@@ -1,5 +1,7 @@
-const fs = require("fs");
-const path = require("path");
+const {
+  readJsonFile,
+  removeComaPrice,
+} = require("../../services/utils/functions");
 
 let controllers = {};
 
@@ -7,36 +9,22 @@ controllers.bestOptionsPerYear = async (req, res) => {
   try {
     const year = Number(req.params.year);
     console.log(year);
-    let bestOptions = {};
-    // read json file
-    const pathJson = path.join(__dirname, "../../public/json/quotes.json");
-    const rawData = fs.readFileSync(pathJson);
-    const quotes = JSON.parse(rawData);
-
-    let filteredQuotes = quotes.filter(
-      (quote) =>
-        (quote.brand === "Chevrolet" ||
-          quote.brand === "Dodge" ||
-          quote.brand === "Ford" ||
-          quote.brand === "GMC" ||
-          quote.brand === "Honda") &&
-        (quote.company === "Seguros Atlas" ||
-          quote.company === "Qualitas" ||
-          quote.company === "MAPFRE")
-    );
-
-    filteredQuotes = removeComaPrice(filteredQuotes);
+    // get quotes from json
+    let quotes = readJsonFile();
+    quotes = removeComaPrice(quotes);
 
     //compare and get best option per coverage type
-    const bestOptionRC = getBestOptionByType(filteredQuotes, year, "RC");
-    const bestOptionLow = getBestOptionByType(filteredQuotes, year, "Low");
-    const bestOptionMid = getBestOptionByType(filteredQuotes, year, "Mid");
-    const bestOptionHigh = getBestOptionByType(filteredQuotes, year, "High");
+    const bestOptionRC = getBestOptionByType(quotes, year, "RC");
+    const bestOptionLow = getBestOptionByType(quotes, year, "Low");
+    const bestOptionMid = getBestOptionByType(quotes, year, "Mid");
+    const bestOptionHigh = getBestOptionByType(quotes, year, "High");
 
-    bestOptions.RC = bestOptionRC;
-    bestOptions.Low = bestOptionLow;
-    bestOptions.Mid = bestOptionMid;
-    bestOptions.High = bestOptionHigh;
+    let bestOptions = [
+      bestOptionRC,
+      bestOptionLow,
+      bestOptionMid,
+      bestOptionHigh,
+    ];
 
     res.status(200).json({
       error: false,
@@ -52,16 +40,6 @@ controllers.bestOptionsPerYear = async (req, res) => {
   }
 };
 
-//Remove coma price to compare prices
-const removeComaPrice = (filteredQuotes) => {
-  return filteredQuotes.map((quote) => {
-    const array = quote.price.split(",");
-    quote.price = array[0] + array[1];
-
-    return quote;
-  });
-};
-
 const getBestOptionByType = (quotes, year, type) => {
   const filtered = quotes.filter(
     (quote) =>
@@ -72,6 +50,7 @@ const getBestOptionByType = (quotes, year, type) => {
   console.log(type, filtered);
 
   let bestOption = null;
+  if (filtered.length === 0) return {};
 
   for (quote of filtered) {
     if (!bestOption) {
