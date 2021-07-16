@@ -11,11 +11,7 @@ functions.readJsonFile = () => {
 
   quotes = quotes.filter(
     (quote) =>
-      (quote.brand === "Chevrolet" ||
-        quote.brand === "Dodge" ||
-        quote.brand === "Ford" ||
-        quote.brand === "GMC" ||
-        quote.brand === "Honda") &&
+      quote.brand !== "Mazda" &&
       (quote.company === "Seguros Atlas" ||
         quote.company === "Qualitas" ||
         quote.company === "MAPFRE")

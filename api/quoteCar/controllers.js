@@ -72,9 +72,9 @@ const getBestOptionByType = (quotes, brand, year, type, hasAC) => {
 
   for (quote of filtered) {
     let totalPrice = 0;
-    hasAC
-      ? (totalPrice = Number(quote.price) + Number(quote.extraCoveragePrice))
-      : (totalPrice = Number(quote.price));
+    totalPrice = hasAC
+      ? Number(quote.price) + Number(quote.extraCoveragePrice)
+      : Number(quote.price);
 
     quote.totalPrice = totalPrice;
     if (!bestOption) {
